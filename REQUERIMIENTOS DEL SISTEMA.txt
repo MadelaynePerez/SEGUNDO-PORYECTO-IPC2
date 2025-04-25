@@ -1,0 +1,54 @@
+REQUERIMIENTOS +
+
+1-Los clientes deben poder registrarse en el sistema con sus datos 
+2-los clientes pueden iniciar sesión 
+3-los clientes podrán actualizar su información 
+4-los clientes podrán visualizar los servicios del salón
+5-los clientes podrán registrar cita 
+6-los clientes podrán escoger horarios para las citas (solo en horario libre)
+7-los clientes podrán ver un historial de citas sus citas hechas por ellos  
+8-el cliente podrá ver una visualización de las facturas por si surgen dudas de cobros
+9- el cliente podrá escoger sus interés para configurar su feed
+10- el cliente podrá cancelar citas 
+
+11- el empleado podrá ver las citas asignadas el dia actual como también de otros días 
+-12 el empleado tendrá la obligación de marcar las citas como completado
+13- el empleado podrá marcar citas como ausente si el cliente falto 
+14-el empleado podrá tener una lista negra de clientes si no se presentan a su cita 
+15- el empleado podrá generar facturas después de completar una cita 
+16-el empleado podrá tener su perfil con su foto e información personal eticamente 
+
+17-marketing podrá publicar anuncios
+18-marketin podrá tener un control de tiempo para los anuncios
+19-marketing podrá editar los anuncios 
+20-marketing podrá eliminar anuncios 
+21-marketin podrá reactivar anuncios si asi lo quiere el cliente 
+22-marketing podrá visualizar reportes 
+23-marketing podra ver el Top 5 anuncios más mostrados en un intervalo de tiempo, mostrando    el total de veces 
+    mostrado y el url de donde se mostró. 
+24-marketing podra ver elTop 5 anuncios menos mostrados en un intervalo de tiempo, mostrando el total de veces  mostrado y el url de donde se mostró. 
+25-marketing podra ver elHistorial de anuncios más “comprados” o usados, con detalle de cada 
+anuncio por cada tipo, y los detalles de cada uno 
+26-marketin tendrá los controles de pagos recibidos de anuncios 
+
+27-administración podrá gestionar horarios para los empleados 
+28-administración podrá crear usuarios 
+29-administración podrá editar usuarios
+30-administración podrá eliminar usuarios
+31-administración podrá crear servicios
+32-administración podrá editar servicios
+33-administración podrá eliminar servicios 
+34-administración podra generar Reporte de ganancias por servicios en un intervalo de tiempo. El reporte 
+debe incluir por cada servicio un listado del detalle de las citas que ya fueron  completadas y el cobro realizado, el reporte debe mostrar el total del ingreso. se podrá filtrar por servicio. 
+
+35-administración podra generarReporte de los 5  anuncios más mostrados en un intervalo de tiempo, el 
+reporte debe incluir el detalle, cuántas veces se mostró, el url donde se 
+mostró. 
+36-administración podra generarReporte de los 5 clientes con más citas reservadas, se debe mostrar el total de citas y el detalle de cada cita. 
+37-administración podra generar Reporte de los 5 clientes con menos citas reservadas, se debe mostrar el total de citas y el detalle de cada cita. 
+38-administración podra generarReporte de clientes de la lista “negra”, el reporte debe incluir a todos los usuario que cancelaron citas, incluyendo el detalle de la cita cancelada. 
+39-administración podra generarReporte de los 5 clientes que han gastado más en un intervalo de tiempo, el reporte debe incluir el detalle de las citas, el total gastado por cliente, se podrá filtrar por cliente. 
+40-administración podra generarReporte de los 5 clientes que han gastado menos en un intervalo de tiempo, el reporte debe incluir el detalle de las citas, el total gastado por cliente, se podrá filtrar por cliente. 
+41-administración podra generarReporte de ganancias por empleado, mostrando el detalle de cada cita que atendió y el total de la ganancia. se podrá filtrar por empleado. 
+42-administración podra generarReporte de los 5 clientes que más citas han atendido en un intervalo de tiempo, incluir total de citas, detalle de citas. se podrá filtrar por empleado. 
+
