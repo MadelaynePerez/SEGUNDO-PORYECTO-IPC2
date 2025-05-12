@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,33 +21,80 @@ import java.util.logging.Logger;
  * @author Ana
  */
 public class QueryCita {
-      public boolean crear(Cita cita) {
+
+    public boolean crear(Cita cita) {
         Connection connection = null;
         PreparedStatement pstmt = null;
-        Usuario usuarioExistente = encontrarCitaPorId(cita.getIdCita());
+        ResultSet rs = null;
+
         try {
-            if (usuarioExistente != null) {
+            if (cita == null) {
                 return false;
-
             }
+
             connection = Coneccion.getConnection();
-            String sql = "INSERT INTO cita (id_cliente, id_empleado, id_servicio, fecha, hora) VALUES (?, ?, ?, ?, ?)";
 
+            String duracionSql = "SELECT duracion FROM servicio WHERE id_servicio = ?";
+            pstmt = connection.prepareStatement(duracionSql);
+            pstmt.setInt(1, cita.getIdServicio());
+            rs = pstmt.executeQuery();
+            if (!rs.next()) {
+                return false;
+            }
+            int duracionMin = rs.getInt("duracion");
+
+            rs.close();
+            pstmt.close();
+
+            LocalTime horaInicio = cita.getHora().toLocalTime();
+            LocalTime horaFin = horaInicio.plusMinutes(duracionMin);
+
+            String sql = "SELECT c.hora, s.duracion "
+                    + "FROM cita c "
+                    + "JOIN servicio s ON c.id_servicio = s.id_servicio "
+                    + "WHERE c.id_empleado = ? "
+                    + "AND c.fecha = ? "
+                    + "AND c.estado != 'Cancelada'";
             pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, cita.getIdEmpleado());
+            pstmt.setDate(2, cita.getFecha());
+            rs = pstmt.executeQuery();
 
+            while (rs.next()) {
+                LocalTime horaExistente = rs.getTime("hora").toLocalTime();
+                int duracionExistente = rs.getInt("duracion");
+                LocalTime finExistente = horaExistente.plusMinutes(duracionExistente);
+
+                boolean traslape
+                        = !horaFin.isBefore(horaExistente) && !horaInicio.isAfter(finExistente);
+
+                if (traslape) {
+                    return false;
+                }
+            }
+
+            rs.close();
+            pstmt.close();
+
+            String insertSql = "INSERT INTO cita (id_cliente, id_empleado, id_servicio, fecha, hora, estado) VALUES (?, ?, ?, ?, ?, ?)";
+            pstmt = connection.prepareStatement(insertSql);
             pstmt.setInt(1, cita.getIdCliente());
             pstmt.setInt(2, cita.getIdEmpleado());
             pstmt.setInt(3, cita.getIdServicio());
-            pstmt.setDate(4, cita.getFecha());  
-            pstmt.setTime(5, cita.getHora());   
+            pstmt.setDate(4, cita.getFecha());
+            pstmt.setTime(5, cita.getHora());
             pstmt.setString(6, cita.getEstado().name());
 
             int filasInsertadas = pstmt.executeUpdate();
             return filasInsertadas > 0;
+
         } catch (Exception e) {
             Logger.getLogger(QueryUsuario.class.getName()).log(Level.SEVERE, null, e);
         } finally {
             try {
+                if (rs != null) {
+                    rs.close();
+                }
                 if (pstmt != null) {
                     pstmt.close();
                 }
@@ -57,9 +105,11 @@ public class QueryCita {
                 Logger.getLogger(QueryUsuario.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+
         return false;
     }
-      public Usuario encontrarCitaPorId(int idcita) {
+
+    public Usuario encontrarCitaPorId(int idcita) {
         Connection connection = null;
         PreparedStatement pstmt = null;
 
@@ -100,4 +150,41 @@ public class QueryCita {
         }
         return null;
     }
+
+    public boolean cancelarCita(int idCita, int idCliente) {
+        Connection connection = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            connection = Coneccion.getConnection();
+
+            String sql = "UPDATE cita SET estado = 'Cancelada' WHERE id_cita = ? AND id_cliente = ?";
+            pstmt = connection.prepareStatement(sql);
+            pstmt.setInt(1, idCita);
+            pstmt.setInt(2, idCliente);
+
+            int filasActualizadas = pstmt.executeUpdate();
+
+            return filasActualizadas > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(QueryUsuario.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(QueryUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(QueryUsuario.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        return false;
+    }
+
 }

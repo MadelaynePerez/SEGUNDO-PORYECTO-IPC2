@@ -4,6 +4,10 @@
  */
 package com.mycompany.salondebelleza.Servlets;
 
+import com.mycompany.salondebelleza.DatosDTO.ServicioDTO;
+import com.mycompany.salondebelleza.Modelos.Servicio;
+import com.mycompany.salondebelleza.Services.ServicioService;
+import com.mycompany.salondebelleza.Utils.JsonUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -71,7 +75,71 @@ public class ServicioServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        
+        JsonUtil<String> responseJson = new JsonUtil<>();
+        JsonUtil<ServicioDTO> requestJson = new JsonUtil<>();
+        ServicioDTO datosEntrada = requestJson.JsonAObjeto(request, ServicioDTO.class);
+
+        int idServicio = datosEntrada.getIdServicio();
+        String nombre = datosEntrada.getNombre();
+        String descripcion = datosEntrada.getDescripcion();
+        double precio = datosEntrada.getPrecio();
+        int duracion = datosEntrada.getDuracion();
+        
+        String rutaCatalogo = datosEntrada.getRutaCatalogo();
+        
+        Servicio servicio = new Servicio(0, nombre, descripcion, precio, duracion,  true, rutaCatalogo);
+        ServicioService crearServicioService = new ServicioService();
+
+        boolean resultado = crearServicioService.crearAnuncio(servicio);
+        if (resultado) {
+            responseJson.EnviarJson(response, "Servicio Creado");
+        } else {
+            responseJson.EnviarJson(response, "Error al crear el servicio");
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+         JsonUtil<String> responseJson = new JsonUtil<>();
+        JsonUtil<ServicioDTO> requestJson = new JsonUtil<>();
+        ServicioDTO datosEntrada = requestJson.JsonAObjeto(request, ServicioDTO.class);
+
+        int idServicio = datosEntrada.getIdServicio();
+       
+        ServicioService eliminarServicioService = new ServicioService();
+
+        boolean resultado = eliminarServicioService.eliminarServicio(idServicio);
+        if (resultado) {
+            responseJson.EnviarJson(response, "Servicio Eliminado");
+        } else {
+            responseJson.EnviarJson(response, "Error al eliminar el servicio");
+        }
+    
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+         JsonUtil<String> responseJson = new JsonUtil<>();
+        JsonUtil<ServicioDTO> requestJson = new JsonUtil<>();
+        ServicioDTO datosEntrada = requestJson.JsonAObjeto(request, ServicioDTO.class);
+
+        int idServicio = datosEntrada.getIdServicio();
+        String nombre = datosEntrada.getNombre();
+        String descripcion = datosEntrada.getDescripcion();
+        double precio = datosEntrada.getPrecio();
+        int duracion = datosEntrada.getDuracion();
+        String rutaCatalogo = datosEntrada.getRutaCatalogo();
+        
+        Servicio servicio = new Servicio(idServicio, nombre, descripcion, precio, duracion,  true, rutaCatalogo);
+        ServicioService crearServicioService = new ServicioService();
+
+        boolean resultado = crearServicioService.modificarServicio(servicio);
+        if (resultado) {
+            responseJson.EnviarJson(response, "Servicio modificado");
+        } else {
+            responseJson.EnviarJson(response, "Error al modificar el servicio");
+        }
     }
 
     /**

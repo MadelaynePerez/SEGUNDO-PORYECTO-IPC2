@@ -113,7 +113,7 @@ public class EmpleadoServlet extends HttpServlet {
             }
 
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // Código 500
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); 
             new JsonUtil<>().EnviarJson(response, "Error interno: " + e.getMessage());
         }
     

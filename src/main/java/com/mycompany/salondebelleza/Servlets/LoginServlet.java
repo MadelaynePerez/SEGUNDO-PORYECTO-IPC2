@@ -4,6 +4,7 @@
  */
 package com.mycompany.salondebelleza.Servlets;
 
+import com.mycompany.salondebelleza.DatosDTO.LoginDTO;
 import com.mycompany.salondebelleza.Modelos.Usuario;
 import com.mycompany.salondebelleza.Services.LoginService;
 import com.mycompany.salondebelleza.Utils.JsonUtil;
@@ -76,8 +77,8 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        JsonUtil<Usuario> jsonUtil = new JsonUtil<>();
-        Usuario datosEntrada = jsonUtil.JsonAObjeto(request, Usuario.class);
+        JsonUtil<LoginDTO> jsonUtil = new JsonUtil<>();
+        LoginDTO datosEntrada = jsonUtil.JsonAObjeto(request, LoginDTO.class);
 
         String username = datosEntrada.getCorreo();
         String password = datosEntrada.getPassword();
@@ -86,12 +87,8 @@ public class LoginServlet extends HttpServlet {
         Usuario usuario = loginService.Login(username, password);
 
         if (usuario != null) {
-            HttpSession session = request.getSession(true);
-            session.setAttribute("usuario", username);
-            session.setAttribute("rol", String.valueOf(usuario.getRol().getIdRol()));
-            session.setAttribute("userId", usuario.getIdUsuario());
-
-            jsonUtil.EnviarJson(response, usuario);
+            JsonUtil<Usuario> jsonUtilResponse = new JsonUtil<>();
+            jsonUtilResponse.EnviarJson(response, usuario);
         } else {
             JsonUtil<String> errorJson = new JsonUtil<>();
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
